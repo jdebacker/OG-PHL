@@ -54,7 +54,7 @@ def get_e_interp(E, S, J, lambdas, age_wgts, gini_to_match=40.7, plot=False):
     usa_params.update_specifications(
         json.load(
             urllib.request.urlopen(
-                "https://raw.githubusercontent.com/PSLmodels/OG-USA/master/ogusa/ogusa_default_parameters.json"
+                "https://raw.githubusercontent.com/jdebacker/OG-USA/demog_J/ogusa/ogusa_default_parameters.json"
             )
         )
     )
@@ -114,13 +114,7 @@ def get_e_interp(E, S, J, lambdas, age_wgts, gini_to_match=40.7, plot=False):
     )
     a = x.root
     e_new = usa_params.e[0, :, :] * np.exp(a * usa_params.e[0, :, :])
-    emat_new_scaled = (
-        e_new
-        / (
-            e_new
-            * usa_params.omega_SS
-        ).sum()
-    )
+    emat_new_scaled = e_new / (e_new * usa_params.omega_SS).sum()
     # Now interpolate for the cases where S and/or J not the same in the
     # country parameterization as in the default USA parameterization
     if (
@@ -179,10 +173,7 @@ def get_e_interp(E, S, J, lambdas, age_wgts, gini_to_match=40.7, plot=False):
             (new_s_mesh, new_j_mesh),
             method="linear",
         )
-        emat_new_scaled = (
-            emat_new
-            / (emat_new * age_wgts).sum()
-        )
+        emat_new_scaled = emat_new / (emat_new * age_wgts).sum()
 
         if plot:
             kwargs = {"filesuffix": "_intrp_scaled"}
